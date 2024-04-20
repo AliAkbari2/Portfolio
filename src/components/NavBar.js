@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
-import logo from "../assets/img/logo.svg";
+import lightLogo from "../assets/img/logo-white.png";
+import darkLogo from "../assets/img/logo-black.png";
 import navIcon1 from "../assets/img/nav-icon1.svg";
 import navIcon2 from "../assets/img/github-mark-white.png";
 import { HashLink } from "react-router-hash-link";
@@ -9,6 +10,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 export const NavBar = () => {
   const [activeLink, setActiveLink] = useState("home");
   const [scrolled, setScrolled] = useState(false);
+  const [preferredLogo, setPreferredLogo] = useState(null);
 
   useEffect(() => {
     const onScroll = () => {
@@ -28,12 +30,20 @@ export const NavBar = () => {
     setActiveLink(value);
   };
 
+  useEffect(() => {
+    const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const isDarkMode = darkModeQuery.matches;
+
+    const preferredLogoPath = isDarkMode ? lightLogo : darkLogo;
+    setPreferredLogo(preferredLogoPath);
+  }, []);
+
   return (
     <Router>
       <Navbar expand="md" className={scrolled ? "scrolled" : ""}>
         <Container>
           <Navbar.Brand href="/">
-            <img src={logo} alt="Logo" />
+            <img src={preferredLogo} alt="Logo" className="logo" />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav">
             <span className="navbar-toggler-icon"></span>
@@ -41,13 +51,13 @@ export const NavBar = () => {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
               <Nav.Link
-                href="#home"
+                href="#cv"
                 className={
-                  activeLink === "home" ? "active navbar-link" : "navbar-link"
+                  activeLink === "cv" ? "active navbar-link" : "navbar-link"
                 }
-                onClick={() => onUpdateActiveLink("home")}
+                onClick={() => onUpdateActiveLink("cv")}
               >
-                Home
+                CV
               </Nav.Link>
               <Nav.Link
                 href="#skills"
